@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Budgets — BudgetIQ{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Monthly Budgets</h1>
+    <p class="page-sub">{{ current_month }} limits</p>
+  </div>
+</div>
+
+<div class="content-grid">
+  <div class="card">
+    <h2 class="card-title">Set a Budget Limit</h2>
+    <form action="/budgets" method="POST">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Category</label>
+          <select name="category" required>
+            <option value="">Select category</option>
+            {% for cat in categories %}
+              <option value="{{ cat }}">{{ cat }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Monthly Limit (KES)</label>
+          <input type="number" name="limit" step="0.01" min="1" placeholder="e.g. 10000" required>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">Save Budget</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2 class="card-title">Budget vs Spending</h2>
+    {% if budgets %}
+      <div class="category-list">
+        {% for b in budgets %}
+          {% set spent = spending_map.get(b['category'], 0) %}
+          {% set pct = (spent / b['monthly_limit'] * 100) if b['monthly_limit'] > 0 else 0 %}
+          {% set over = spent > b['monthly_limit'] %}
+          <div class="cat-item">
+            <div class="cat-header">
+              <span class="cat-name">{{ b['category'] }}</span>
+              <span class="cat-amount {% if over %}text-red{% endif %}">
+                KES {{ "{:,.0f}".format(spent) }} / {{ "{:,.0f}".format(b['monthly_limit']) }}
+              </span>
+            </div>
+            <div class="cat-bar-track">
+              <div class="cat-bar {% if over %}over-budget{% endif %}"
+                   style="width: {{ [pct, 100]|min }}%"></div>
+            </div>
+            <div class="cat-meta">
+              {% if over %}
+                <span class="text-red">⚠ Over by KES {{ "{:,.0f}".format(spent - b['monthly_limit']) }}</span>
+              {% else %}
+                <span>{{ "{:.1f}".format(pct) }}% used — KES {{ "{:,.0f}".format(b['monthly_limit'] - spent) }} left</span>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">No budgets set yet. Add one to track limits.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
