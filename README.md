@@ -9,11 +9,11 @@ A clean, fast web app to track personal expenses by category, set monthly budget
 
 ## Features
 
-- ➕ Add expenses with category, description & date
-- 📊 Monthly dashboard with category breakdown & progress bars
-- 🚨 Budget limits with over-budget warnings
-- 📥 Export all expenses to CSV
-- 📱 Fully responsive (mobile-friendly)
+- Add expenses with category, description & date
+  - Monthly dashboard with category breakdown & progress bars
+-  Budget limits with over-budget warnings
+-  Export all expenses to CSV
+-  Fully responsive (mobile-friendly)
 
 ---
 
