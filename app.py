@@ -43,6 +43,9 @@ def init_db():
     conn.commit()
     conn.close()
 
+# THIS LINE IS THE FIX — runs when gunicorn imports the file
+init_db()
+
 @app.route('/')
 def index():
     conn = get_db()
@@ -188,6 +191,5 @@ def chart_data():
     })
 
 if __name__ == '__main__':
-    init_db()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
